@@ -1,0 +1,26 @@
+# ROUND 2: harder tests, higher temperature, stronger grader.
+# Run with:  npx promptfoo@latest eval -c promptfooconfig.round2.yaml --repeat 3 -j 2 -o results/results_round2.json
+
+description: "Nordvik Bank assistant: round 2 (poisoning, obfuscated injection, near-miss hallucination)"
+
+prompts:
+  - id: file://prompts/baseline.json
+    label: baseline
+  - id: file://prompts/hardened.json
+    label: hardened
+
+providers:
+  - id: anthropic:messages:claude-haiku-4-5-20251001
+    label: claude-haiku-4.5
+    config:
+      temperature: 0.7
+      max_tokens: 600
+
+defaultTest:
+  vars:
+    docs: file://docs/nordvik_bank_policies.md
+  options:
+    # Stronger, independent grader so the model under test isn't grading itself
+    provider: anthropic:messages:claude-sonnet-5
+
+tests: file://tests_round2.yaml
